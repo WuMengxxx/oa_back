@@ -9,11 +9,7 @@ import com.wumeng.process.service.OaProcessTemplateService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * <p>
@@ -39,6 +35,38 @@ public class OaProcessTemplateController {
         IPage<ProcessTemplate> pageModel = processTemplateService.selectPageProcessTemplate(pageParam);
         return Result.ok(pageModel);
 
+    }
+
+    //@PreAuthorize("hasAuthority('bnt.processTemplate.list')")
+    @ApiOperation(value = "获取")
+    @GetMapping("get/{id}")
+    public Result get(@PathVariable Long id) {
+        ProcessTemplate processTemplate = processTemplateService.getById(id);
+        return Result.ok(processTemplate);
+    }
+
+    //@PreAuthorize("hasAuthority('bnt.processTemplate.templateSet')")
+    @ApiOperation(value = "新增")
+    @PostMapping("save")
+    public Result save(@RequestBody ProcessTemplate processTemplate) {
+        processTemplateService.save(processTemplate);
+        return Result.ok();
+    }
+
+    //@PreAuthorize("hasAuthority('bnt.processTemplate.templateSet')")
+    @ApiOperation(value = "修改")
+    @PutMapping("update")
+    public Result updateById(@RequestBody ProcessTemplate processTemplate) {
+        processTemplateService.updateById(processTemplate);
+        return Result.ok();
+    }
+
+    //@PreAuthorize("hasAuthority('bnt.processTemplate.remove')")
+    @ApiOperation(value = "删除")
+    @DeleteMapping("remove/{id}")
+    public Result remove(@PathVariable Long id) {
+        processTemplateService.removeById(id);
+        return Result.ok();
     }
 }
 

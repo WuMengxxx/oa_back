@@ -57,7 +57,7 @@ public class OaProcessTypeController {
 
 
     @ApiOperation("修改")
-    @PostMapping("update")
+    @PutMapping("update")
     public Result update(@RequestBody ProcessType processType){
         processTypeService.updateById(processType);
         return Result.ok();
@@ -65,7 +65,7 @@ public class OaProcessTypeController {
 
 
     @ApiOperation("删除")
-    @PostMapping("remove/{id}")
+    @DeleteMapping("remove/{id}")
     public Result remove(@PathVariable Long id){
         processTypeService.removeById(id);
         return Result.ok();
