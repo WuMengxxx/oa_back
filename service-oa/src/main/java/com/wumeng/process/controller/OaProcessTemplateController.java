@@ -9,7 +9,15 @@ import com.wumeng.process.service.OaProcessTemplateService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.ResourceUtils;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * <p>
@@ -68,5 +76,48 @@ public class OaProcessTemplateController {
         processTemplateService.removeById(id);
         return Result.ok();
     }
+
+
+    @ApiOperation("上传流程定义")
+    @PostMapping("/uploadProcessDefinition")
+    public Result uploadProcessDefinition(MultipartFile file)throws FileNotFoundException{
+        //获取classes目录位置
+        String path = new File(ResourceUtils.getURL("classpath:")
+                .getPath()).getAbsolutePath();
+        //设置上传文件夹
+        File tempFile = new File(path + "/processes");
+        if(!tempFile.exists()){
+            //mkdir创建单级目录
+            //mkdirs创建多级目录
+            tempFile.mkdirs();
+        }
+        //创建空文件实现文件写入
+        String filename = file.getOriginalFilename();
+        File zipFile = new File(path + "/processes/" + filename);
+
+        //保存文件
+        try {
+            file.transferTo(zipFile);
+        } catch (IOException e) {
+            return Result.fail();
+        }
+
+
+        Map<String,Object> map = new HashMap<>();
+        //根据上传地址后续部署流程定义，文件名称为流程定义的默认key
+        map.put("processDefinitionPath","processes/"+filename);
+        map.put("processDefinitionKey",filename.substring(0,filename.lastIndexOf(".")));
+        return Result.ok(map);
+
+    }
+
+    @ApiOperation("发布")
+    @GetMapping("/publish/{id}")
+    public Result publish(@PathVariable Long id){
+        //修改模板发布状态 1已经发布
+        processTemplateService.publish(id);
+        return Result.ok();
+    }
+
 }
 

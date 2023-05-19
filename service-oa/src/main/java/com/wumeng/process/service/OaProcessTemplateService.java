@@ -19,4 +19,6 @@ import org.springframework.stereotype.Service;
 public interface OaProcessTemplateService extends IService<ProcessTemplate> {
 
     IPage<ProcessTemplate> selectPageProcessTemplate(Page<ProcessTemplate> pageParam);
+
+    void publish(Long id);
 }
